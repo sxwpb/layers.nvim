@@ -49,7 +49,10 @@ function layermap:set(mode, lhs, rhs, opts)
   mode = type(mode) == "string" and { mode } or mode
   for _, m in ipairs(mode) do
     if self._store[m][lhs] == nil then -- this ensures we always restore the original map
-      self._store[m][lhs] = vim.fn.maparg(lhs, m, false, true)
+      local map = vim.fn.maparg(lhs, m, false, true)
+      if not (map.buffer == 1) then
+        self._store[m][lhs] = map
+      end
     end
   end
   vim.keymap.set(mode, lhs, rhs, opts)
